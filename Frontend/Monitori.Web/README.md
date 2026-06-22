@@ -1,59 +1,95 @@
-# MonitoriWeb
+# Monitori.Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.16.
+Frontend em Angular para gerenciamento de empreendimentos do sistema Monitori.
 
-## Development server
+## Visão geral
 
-To start a local development server, run:
+A aplicação permite:
 
-```bash
-ng serve
-```
+- listar empreendimentos com paginação, ordenação e filtros por nome e status;
+- cadastrar novos empreendimentos;
+- editar registros existentes;
+- inativar empreendimentos;
+- exibir notificações de sucesso, erro e informação;
+- mostrar indicador de carregamento durante chamadas HTTP.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Tecnologias
 
-## Code scaffolding
+- Angular 21
+- TypeScript
+- RxJS
+- Angular Forms
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Pré-requisitos
 
-```bash
-ng generate component component-name
-```
+- Node.js instalado
+- npm 10+ disponível
+- API do backend em execução localmente
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Instalação
 
 ```bash
-ng build
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## Executando em desenvolvimento
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Depois disso, abra:
 
-For end-to-end (e2e) testing, run:
+```text
+http://localhost:4200/
+```
+
+## Build de produção
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+O resultado será gerado em `dist/`.
 
-## Additional Resources
+## Testes
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm test
+```
+
+## Scripts disponíveis
+
+- `npm start`: sobe o servidor Angular em modo desenvolvimento;
+- `npm run build`: gera o build de produção;
+- `npm run watch`: recompila automaticamente em modo desenvolvimento;
+- `npm test`: executa os testes unitários.
+
+## Rotas da aplicação
+
+- `/`: listagem de empreendimentos;
+- `/novo`: cadastro de empreendimento;
+- `/editar/:id`: edição de empreendimento.
+
+## Integração com a API
+
+O frontend consome a API de empreendimentos em:
+
+```text
+http://localhost:5041/api/empreendimento
+```
+
+Essa configuração está centralizada em [src/app/core/services/empreendimento.service.ts](src/app/core/services/empreendimento.service.ts).
+
+Se o backend estiver em outra URL ou porta, atualize esse arquivo antes de rodar a aplicação.
+
+## Estrutura principal
+
+- [src/app/core](src/app/core): serviços, modelos, interceptors e infraestrutura compartilhada;
+- [src/app/features/empreendimentos](src/app/features/empreendimentos): telas de listagem e formulário;
+- [src/app/shared/components](src/app/shared/components): componentes reutilizáveis como spinner e notificações.
+
+## Observações
+
+- O formulário aplica validação de CNPJ e bloqueia edição de registros inativos.
+- A listagem suporta paginação, ordenação e filtros sem recarregar a página.
