@@ -1,0 +1,15 @@
+<div class="notification-container">
+  @for (n of notificationService.notifications(); track n.id) {
+    <div class="toast" [ngClass]="n.type" role="alert" aria-live="assertive">
+      <div class="toast-content">
+        <span class="icon">
+          @if (n.type === 'success') { ✓ }
+          @else if (n.type === 'error') { ✗ }
+          @else { ℹ }
+        </span>
+        <span class="message">{{ n.message }}</span>
+      </div>
+      <button class="close-btn" (click)="notificationService.remove(n.id)" aria-label="Fechar">✕</button>
+    </div>
+  }
+</div>

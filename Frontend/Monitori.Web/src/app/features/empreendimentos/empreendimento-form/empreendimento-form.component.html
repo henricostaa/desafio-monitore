@@ -1,0 +1,113 @@
+<div class="page-container form-page">
+  <div class="header-section">
+    <div>
+      <a routerLink="/" class="btn-back"> ← Voltar para a listagem </a>
+      <h1 class="page-title">
+        {{ isEditMode() ? 'Editar Empreendimento' : 'Novo Empreendimento' }}
+      </h1>
+      <p class="page-subtitle">
+        {{
+          isEditMode()
+            ? 'Atualize as informações do empreendimento selecionado.'
+            : 'Cadastre um novo empreendimento no sistema.'
+        }}
+      </p>
+    </div>
+  </div>
+
+  @if (isInactiveRecord()) {
+    <div class="alert-warning" role="alert">
+      <span class="alert-icon">⚠️</span>
+      <div class="alert-content">
+        <strong>Atenção!</strong> Este empreendimento foi inativado. Edições só são permitidas para
+        empreendimentos ativos.
+      </div>
+    </div>
+  }
+
+  <div class="form-card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-group-full">
+          <label for="nome">Nome do Empreendimento <span class="required">*</span></label>
+          <input
+            id="nome"
+            type="text"
+            formControlName="nome"
+            placeholder="Ex: Condomínio Jardim das Flores"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': form.get('nome')?.invalid && form.get('nome')?.touched }"
+          />
+          @if (form.get('nome')?.invalid && form.get('nome')?.touched) {
+            <div class="invalid-feedback">
+              @if (form.get('nome')?.hasError('required')) {
+                O nome é obrigatório.
+              } @else if (form.get('nome')?.hasError('minlength')) {
+                O nome deve conter no mínimo 3 caracteres.
+              }
+            </div>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="cnpj">CNPJ <span class="required">*</span></label>
+          <input
+            id="cnpj"
+            type="text"
+            formControlName="cnpj"
+            placeholder="00.000.000/0000-00"
+            (input)="onCnpjInput($event)"
+            maxlength="18"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': form.get('cnpj')?.invalid && form.get('cnpj')?.touched }"
+          />
+          @if (form.get('cnpj')?.invalid && form.get('cnpj')?.touched) {
+            <div class="invalid-feedback">
+              @if (form.get('cnpj')?.hasError('required')) {
+                O CNPJ é obrigatório.
+              } @else if (
+                form.get('cnpj')?.hasError('cnpjLength') ||
+                form.get('cnpj')?.hasError('cnpjInvalid')
+              ) {
+                CNPJ inválido. Digite um CNPJ válido com 14 dígitos.
+              }
+            </div>
+          }
+          @if (isEditMode()) {
+            <small class="helper-text text-muted"
+              >O CNPJ não pode ser alterado após o cadastro.</small
+            >
+          }
+        </div>
+
+        <div class="form-group-full">
+          <label for="endereco">Endereço <span class="optional">(Opcional)</span></label>
+          <textarea
+            id="endereco"
+            formControlName="endereco"
+            rows="3"
+            placeholder="Ex: Av. Paulista, 1000 - Bela Vista, São Paulo - SP"
+            class="form-control"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <a routerLink="/" class="btn btn-secondary"> Cancelar </a>
+        <button
+          type="submit"
+          [disabled]="form.invalid || isInactiveRecord() || isLoadingState()"
+          class="btn btn-primary"
+        >
+          {{
+            isLoadingState()
+              ? 'Salvando...'
+              : isEditMode()
+                ? 'Salvar Alterações'
+                : 'Cadastrar Empreendimento'
+          }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

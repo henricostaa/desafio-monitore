@@ -1,0 +1,42 @@
+# Build outputs
+**/bin/
+**/obj/
+**/dist/
+**/tmp/
+**/out-tsc/
+**/coverage/
+
+# Angular / Node
+**/node_modules/
+**/.angular/cache/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local database files
+**/*.db
+**/*.db-journal
+**/*.db-shm
+**/*.db-wal
+
+# Visual Studio / VS Code / IDEs
+.vs/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*.tmp
+*.temp
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/mcp.json
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini

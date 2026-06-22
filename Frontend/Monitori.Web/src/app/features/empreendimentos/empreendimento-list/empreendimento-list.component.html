@@ -1,0 +1,184 @@
+<div class="page-container">
+  <div class="header-section">
+    <div>
+      <h1 class="page-title">Empreendimentos</h1>
+      <p class="page-subtitle">Gerencie todos os empreendimentos cadastrados no sistema.</p>
+    </div>
+    <a routerLink="/novo" class="btn btn-primary">
+      <span class="btn-icon">+</span> Novo Empreendimento
+    </a>
+  </div>
+
+  <div class="filters-card">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="search-name">Filtrar por Nome</label>
+        <div class="input-wrapper">
+          <input
+            id="search-name"
+            type="text"
+            placeholder="Digite o nome..."
+            [ngModel]="filterName()"
+            (ngModelChange)="filterName.set($event)"
+            (keyup.enter)="onFilter()"
+            class="form-control"
+          />
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <label for="search-status">Filtrar por Status</label>
+        <select
+          id="search-status"
+          [ngModel]="filterStatus()"
+          (ngModelChange)="filterStatus.set($event); onFilter()"
+          class="form-control"
+        >
+          <option value="">Todos</option>
+          <option value="1">Ativos</option>
+          <option value="2">Inativos</option>
+        </select>
+      </div>
+
+      <div class="filter-actions">
+        <button type="button" class="btn btn-secondary" (click)="onFilter()">Buscar</button>
+        <button type="button" class="btn btn-text" (click)="onClearFilters()">Limpar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-card">
+    @if (empreendimentos().length > 0) {
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th (click)="onSort('Nome')" class="sortable">
+                Nome
+                <span class="sort-icon">
+                  @if (sortBy() === 'Nome') {
+                    {{ sortOrder() === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    ↕
+                  }
+                </span>
+              </th>
+              <th>CNPJ</th>
+              <th>Endereço</th>
+              <th (click)="onSort('Status')" class="sortable">
+                Status
+                <span class="sort-icon">
+                  @if (sortBy() === 'Status') {
+                    {{ sortOrder() === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    ↕
+                  }
+                </span>
+              </th>
+              <th (click)="onSort('DataCriacao')" class="sortable">
+                Data de Criação
+                <span class="sort-icon">
+                  @if (sortBy() === 'DataCriacao') {
+                    {{ sortOrder() === 'asc' ? '▲' : '▼' }}
+                  } @else {
+                    ↕
+                  }
+                </span>
+              </th>
+              <th class="actions-header">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (emp of empreendimentos(); track emp.id) {
+              <tr>
+                <td class="font-semibold">{{ emp.nome }}</td>
+                <td class="text-secondary font-mono">
+                  {{ emp.cnpj | slice: 0 : 2 }}.{{ emp.cnpj | slice: 2 : 5 }}.{{
+                    emp.cnpj | slice: 5 : 8
+                  }}/{{ emp.cnpj | slice: 8 : 12 }}-{{ emp.cnpj | slice: 12 : 14 }}
+                </td>
+                <td class="text-secondary truncate-cell" [title]="emp.endereco || 'Não informado'">
+                  {{ emp.endereco || '-' }}
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    [ngClass]="emp.status === 'Ativo' ? 'badge-success' : 'badge-danger'"
+                  >
+                    {{ emp.status }}
+                  </span>
+                </td>
+                <td class="text-secondary">{{ emp.dataCriacao | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>
+                  <div class="action-buttons">
+                    @if (emp.status === 'Ativo') {
+                      <a
+                        [routerLink]="['/editar', emp.id]"
+                        class="btn-action btn-edit"
+                        title="Editar Empreendimento"
+                      >
+                        Editar
+                      </a>
+                      <button
+                        (click)="onInactivate(emp.id, emp.nome)"
+                        class="btn-action btn-delete"
+                        title="Inativar Empreendimento"
+                      >
+                        Inativar
+                      </button>
+                    } @else {
+                      <span class="text-muted text-sm italic">Sem ações</span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-footer">
+        <span class="pagination-summary">
+          Mostrando <strong>{{ (currentPage() - 1) * pageSize() + 1 }}</strong> a
+          <strong>{{ getMinIndex() }}</strong> de <strong>{{ totalCount() }}</strong> registros
+        </span>
+
+        <div class="pagination-buttons">
+          <button
+            [disabled]="currentPage() === 1"
+            (click)="onPageChange(currentPage() - 1)"
+            class="btn-page"
+            aria-label="Página anterior"
+          >
+            &laquo;
+          </button>
+
+          @for (page of pages; track page) {
+            <button
+              [ngClass]="{ active: currentPage() === page }"
+              (click)="onPageChange(page)"
+              class="btn-page"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            [disabled]="currentPage() === totalPages"
+            (click)="onPageChange(currentPage() + 1)"
+            class="btn-page"
+            aria-label="Próxima página"
+          >
+            &raquo;
+          </button>
+        </div>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">📁</div>
+        <h3>Nenhum empreendimento encontrado</h3>
+        <p>Tente alterar seus filtros ou cadastre um novo empreendimento no botão acima.</p>
+      </div>
+    }
+  </div>
+</div>
